@@ -12,6 +12,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import jmr.ms.kot11iglesias.domain.Customer;
 import jmr.ms.kot11iglesias.service.CustomerService;
 
@@ -25,6 +30,8 @@ public class CustomerControllerTests
 
 	@MockBean
 	private CustomerService service;
+	
+	Customer[] customers = {new Customer(1L, "Anna"), new Customer(2L, "Bernard")};
 
 	@Test
 	public void getByIdTest() throws Exception
@@ -36,5 +43,18 @@ public class CustomerControllerTests
 		mvc.perform(get("/customers/1"))
 			.andExpect(jsonPath("$.id").value(1))
 			.andExpect(jsonPath("$.name").value("aAbc"));
+	}
+	
+	@Test
+	public void getAllTest() throws Exception
+	{
+		// given
+		given(service.findAll()).willReturn(Stream.of(customers).collect(Collectors.toList()));
+
+		// when		
+		mvc.perform(get("/customers"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$[0].id").value(1))
+			.andExpect(jsonPath("$[1].name").value("Bernard"));
 	}
 }
