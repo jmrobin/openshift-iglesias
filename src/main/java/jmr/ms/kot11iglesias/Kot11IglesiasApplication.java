@@ -25,6 +25,7 @@ public class Kot11IglesiasApplication
 		cs.add(new Customer("Vertex"));
 		cs.add(new Customer("Openshift"));
 		cs.add(new Customer("Marianne"));
+		cs.add(new Customer("Marius"));
 		return cs;
 	}
 
